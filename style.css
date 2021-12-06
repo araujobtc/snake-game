@@ -1,3 +1,23 @@
-h2{
-    color: rgb(128, 74, 52)
+*{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+body{
+    background-color: rgb(26, 26, 26);
+}
+
+.game{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.game h1{
+    color: rgb(109, 202, 100);
+}
+
+.game canvas{
+    border-radius: 5px;
 }

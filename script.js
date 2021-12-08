@@ -1,12 +1,15 @@
-let canvas = document.getElementById("snake"); //criar elemento que irá rodar o jogo
+let canvas = document.querySelector("#snake"); //criar elemento que irá rodar o jogo
 let context = canvas.getContext("2d");
 let box = 32;   // 32 pixels cada quadrado
-let interval = 130;
 let direction = "right"
+
+let record = 0;
+let points = 0;
 let snake = []; //criar cobra como lista
+
 snake[0] = {
-    x: 8 * box,
-    y: 8 * box
+    x: 2 * box,
+    y: 2 * box
 }
 let positionFood = {
     x: Math.floor(Math.random() * 15 + 1) * box,
@@ -24,7 +27,10 @@ function createSnake(){
     for(i=0; i<snake.length; i++){
         context.fillStyle = "rgb(128, 74, 52)";
         context.fillRect(snake[i].x, snake[i].y, box, box);
+
     }
+    context.fillStyle = "rgb(80, 38, 31)";
+    context.fillRect(snake[0].x, snake[0].y, box, box);
 }
 
 // Criação da Comida
@@ -33,9 +39,10 @@ function drawFood(){
     context.fillRect(positionFood.x, positionFood.y, box, box);
 }
 
-// controle de movimento
-document.addEventListener('keydown', update);
+// start e play
+document.addEventListener("keydown", update)
 
+// controle de movimento
 function update(event){
     if(event.keyCode == 37 && direction !="right") direction = "left";
     if(event.keyCode == 38 && direction !="down") direction = "up";
@@ -43,8 +50,31 @@ function update(event){
     if(event.keyCode == 40 && direction !="up") direction = "down";
 }
 
+// pontuação e recorde
+function gameScore(){
+        let recordGame = document.querySelector("#record-game");
+        let pointsGame = document.querySelector("#points-game");
+    
+        recordGame.innerText = `Record: ${record}`;
+        pointsGame.innerText = `Pontuação:  ${points}`;
+}
+
+// game over
+function gameOver(){    
+    for(i = 1; i < snake.length; i++){
+        if(snake[0].x == snake[i].x && snake[0].y == snake[i].y){
+            while((snake.length - 1) > 0){
+                snake.pop();
+            }
+            points = 0;
+            clearInterval(game);
+            startGame();
+        }
+    }
+}
+
 // Iniciação do jogo e definindo movimentos
-function startGame(){
+function game(){
 
 // controle de movimento
     if(snake[0].x > 15*box && direction == "right") snake[0].x = 0;
@@ -52,16 +82,12 @@ function startGame(){
     if(snake[0].y > 15*box && direction == "down") snake[0].y = 0;
     if(snake[0].y < 0 && direction == 'up') snake[0].y = 16 * box;
 
-    for(i = 1; i < snake.length; i++){
-        if(snake[0].x == snake[i].x && snake[0].y == snake[i].y){
-            clearInterval(jogo);
-            alert('Game Over :(');
-        }
-    }
-    
+   
     createBG();
     createSnake();
     drawFood();
+    gameScore();
+    gameOver();
 
     let snakeX = snake[0].x;
     let snakeY = snake[0].y;
@@ -78,8 +104,10 @@ function startGame(){
     else{
         positionFood.x = Math.floor(Math.random() * 15 + 1) * box;
         positionFood.y = Math.floor(Math.random() * 15 + 1) * box;
-
+        points++;
+        if(points>record) record = points;
     }
+
 
     let newHead = {
         x: snakeX, 
@@ -89,5 +117,6 @@ function startGame(){
     snake.unshift(newHead)
 }
 
-let game = setInterval(startGame, interval)
+let gameSnake = setInterval(game, 130)
+
 
